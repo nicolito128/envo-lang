@@ -13,21 +13,27 @@ Envo is an esoteric and minimalistic message-oriented programming language where
 First clone the repository and run the interactive REPL:
 
 ```bash
-    git clone https://n128.xyz/n128/envo-lang.git
-    cd envo-lang
-    go run ./cmd/envo/main.go
+git clone https://n128.xyz/n128/envo-lang.git
+cd envo-lang
+go run ./cmd/envo/main.go
 ```
 
 To build a standalone binary:
 
 ```bash
-    go build -o envo ./cmd/envo/main.go
-    ./envo
+go build -o envo ./cmd/envo/main.go
+./envo
+```
+
+You can provide a valid envo file to execute:
+
+```bash
+./envo ./path/to/file
 ```
 
 ## Specification
 
-For a formal description of the language grammar and AST node definitions, see the [SPEC](./SPEC.md).
+For a formal description of the language grammar, see the [SPEC](./SPEC.md).
 
 ## Language Tour
 
@@ -74,23 +80,10 @@ You can bind behavior to a labeled message by specifying a **receiver**, a **pat
 receiver { pattern } { response }
 ```
 
-#### Identity Rule
-Creates an identity pattern that returns whatever argument it matches:
+For example, this definition creates an [identity](https://en.wikipedia.org/wiki/Identity_function) pattern that returns whatever argument it matches:
 
 ```envo
 id{x}{x}
 ```
 
-#### Factorial
-Multiple definitions for the same receiver act as pattern-matched rules evaluated in sequence:
-
-```envo
-fact{0}{1}
-fact{n}{n * fact{n - 1}}
-```
-
-#### Sum Up To N
-```envo
-sum_from{1}{1}
-sum_from{x}{x + sum_from{x - 1}}
-```
+For more examples, see the [examples directory](./examples/).

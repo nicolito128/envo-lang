@@ -1,0 +1,3 @@
+gauss_sum {n} { n * (n + 1) / 2 }
+
+gauss_sum {100}

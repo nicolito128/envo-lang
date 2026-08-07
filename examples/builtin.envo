@@ -1,0 +1,15 @@
+print{~print, "\n"}
+println{~println}
+
+list{}{1, 2, 3}
+println{ len{list{}} }
+
+println{ type{{}}, " ", type{"str"}, " ", type{123}, " ", type{3.1415}, " ", type{~ok} }
+
+println{ head{letters{'a', 'b', 'c'}}, tail{digits{0, 1, 2, 3}} }
+
+print{"Enter one digit: "}
+println{ scan{"%d"} }
+
+print{"Enter a whole number: "}
+println{ scanln{"%d"} }

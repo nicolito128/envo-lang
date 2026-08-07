@@ -18,14 +18,14 @@ cd envo-lang
 go run ./cmd/envo/main.go
 ```
 
-To build a standalone binary:
+To build a standalone binary and start the REPL:
 
 ```bash
 go build -o envo ./cmd/envo/main.go
 ./envo
 ```
 
-You can provide a valid envo file to execute:
+Or you can provide a valid envo file to execute:
 
 ```bash
 ./envo ./path/to/file

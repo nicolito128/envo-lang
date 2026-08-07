@@ -176,6 +176,8 @@ func (p *Parser) parseExpression(precedence int) ast.Node {
 		}
 	case lexer.NEWLN:
 		return nil
+	case lexer.SEMICOLON:
+		return nil
 	default:
 		if kind.IsOperator() {
 			node = p.parseOperator()

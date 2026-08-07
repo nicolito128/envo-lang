@@ -26,6 +26,7 @@ const (
 	MESSAGE_OBJ     ObjectType = "MESSAGE"
 	DEFINE_OBJ      ObjectType = "DEFINE"
 	DEFINE_LIST_OBJ ObjectType = "DEFINE_LIST"
+	BUILTIN_OBJ     ObjectType = "BUILTIN"
 	NIL_OBJ         ObjectType = "NIL"
 )
 
@@ -34,6 +35,16 @@ type Object interface {
 	Literal() any
 	String() string
 }
+
+// Builtin
+type Builtin struct {
+	Name string
+	Fn   func(*RawMessage) Object
+}
+
+func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }
+func (b *Builtin) Literal() any     { return nil }
+func (b *Builtin) String() string   { return "builtin" }
 
 // Identifier
 type Identifier struct{ Name string }

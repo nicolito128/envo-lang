@@ -15,6 +15,7 @@ func NewEnvironment() *Environment {
 		bindings: make(map[string]object.Object),
 		rules:    make(map[string]*object.DefineList),
 	}
+	attachBuiltins(env)
 	return env
 }
 

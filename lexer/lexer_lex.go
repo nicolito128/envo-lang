@@ -145,10 +145,10 @@ func (lx *Lexer) lexComment() (Token, Position, error) {
 		for {
 			r, err := lx.scanRune()
 			if err != nil && !errors.Is(err, io.EOF) {
-				return tokUNKNOWN, pos, err
+				return tokUNKNOWN, lx.pos, err
 			}
 
-			if r == Newln {
+			if r == Newln || errors.Is(err, io.EOF) {
 				break
 			}
 		}

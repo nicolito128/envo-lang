@@ -102,8 +102,8 @@ func (rt *Runtime) evalProgram(program *ast.Program, env *Environment) object.Ob
 	var result object.Object = NIL
 	for _, stmt := range program.Statements {
 		result = Eval(stmt, env)
-		if err, ok := result.(*object.Error); ok {
-			return err
+		if object.IsError(result) {
+			return result
 		}
 	}
 	return result
@@ -128,9 +128,13 @@ func (rt *Runtime) evalIdentifier(node *ast.Identifier, env *Environment) object
 
 func (rt *Runtime) evalDefine(node *ast.Define, env *Environment) object.Object {
 	receiver := node.Receiver.Name
+	patt := Eval(node.Pattern, env)
+	if object.IsError(patt) {
+		return patt
+	}
 	obj := &object.Define{
 		Receiver: receiver,
-		Pattern:  Eval(node.Pattern, env),
+		Pattern:  patt,
 		Response: node.Response,
 	}
 
@@ -157,6 +161,10 @@ func (rt *Runtime) evalMessage(node *ast.Message, env *Environment) object.Objec
 		argVal = unwrapSingleWordResult(argVal)
 
 		for _, elem := range defList.Elems {
+			if object.IsError(elem) {
+				return elem
+			}
+
 			if def, ok := elem.(*object.Define); ok {
 				execEnv := NewEnclosedEnvironment(env)
 				if rt.matchPattern(def.Pattern, argVal, execEnv) {
@@ -168,6 +176,8 @@ func (rt *Runtime) evalMessage(node *ast.Message, env *Environment) object.Objec
 				}
 			}
 		}
+
+		return &object.Error{Message: fmt.Sprintf("unknown pattern to match: %s", argVal)}
 	}
 
 	if val, ok := env.Get(label); ok {
@@ -207,13 +217,47 @@ func (rt *Runtime) evalRawMessage(raw *ast.RawMessage, env *Environment) object.
 	}
 
 	for _, word := range raw.Words {
-		obj.Words = append(obj.Words, Eval(word, env))
+		elem := Eval(word, env)
+		if object.IsError(elem) {
+			return elem
+		}
+		obj.Words = append(obj.Words, elem)
 	}
 
 	return obj
 }
 
 func (rt *Runtime) evalBinaryOp(op string, left, right object.Object, env *Environment) object.Object {
+	if object.IsError(left) {
+		return left
+	}
+	if object.IsError(right) {
+		return right
+	}
+
+	switch op {
+	case "==":
+		return &object.Bool{Value: object.Equal(left, right)}
+	case "!=":
+		return &object.Bool{Value: !object.Equal(left, right)}
+	case "<":
+		if cmp, ok := compareValues(left, right); ok {
+			return &object.Bool{Value: cmp < 0}
+		}
+	case "<=":
+		if cmp, ok := compareValues(left, right); ok {
+			return &object.Bool{Value: cmp <= 0}
+		}
+	case ">":
+		if cmp, ok := compareValues(left, right); ok {
+			return &object.Bool{Value: cmp > 0}
+		}
+	case ">=":
+		if cmp, ok := compareValues(left, right); ok {
+			return &object.Bool{Value: cmp >= 0}
+		}
+	}
+
 	switch vLeft := left.(type) {
 	case *object.Integer:
 		if vRight, ok := right.(*object.Float); ok {
@@ -339,29 +383,6 @@ func (rt *Runtime) evalBinaryOp(op string, left, right object.Object, env *Envir
 		}
 	}
 
-	switch op {
-	case "==":
-		return &object.Bool{Value: object.Equal(left, right)}
-	case "!=":
-		return &object.Bool{Value: !object.Equal(left, right)}
-	case "<":
-		if cmp, ok := compareValues(left, right); ok {
-			return &object.Bool{Value: cmp < 0}
-		}
-	case "<=":
-		if cmp, ok := compareValues(left, right); ok {
-			return &object.Bool{Value: cmp <= 0}
-		}
-	case ">":
-		if cmp, ok := compareValues(left, right); ok {
-			return &object.Bool{Value: cmp > 0}
-		}
-	case ">=":
-		if cmp, ok := compareValues(left, right); ok {
-			return &object.Bool{Value: cmp >= 0}
-		}
-	}
-
 	return &object.Error{Message: fmt.Sprintf("operation not supported: %s %s %s", left.Type(), op, right.Type())}
 }
 
@@ -400,6 +421,9 @@ func (rt *Runtime) evalUnaryOp(op string, operand object.Object, env *Environmen
 		}
 	case *object.Identifier:
 		saved, ok := env.Get(o.Name)
+		if object.IsError(saved) {
+			return saved
+		}
 		if ok {
 			return rt.evalUnaryOp(op, saved, env)
 		}
@@ -408,6 +432,10 @@ func (rt *Runtime) evalUnaryOp(op string, operand object.Object, env *Environmen
 	case *object.RawMessage:
 		result := make([]object.Object, 0)
 		for _, word := range o.Words {
+			if object.IsError(word) {
+				return word
+			}
+
 			elem := rt.evalUnaryOp(op, word, env)
 			if object.IsError(elem) {
 				return elem
@@ -436,26 +464,47 @@ func (rt *Runtime) matchPattern(pattern object.Object, arg object.Object, env *E
 		argElems = []object.Object{arg}
 	}
 
-	for _, arg := range argElems {
-		switch p := pattern.(type) {
-		case *object.Identifier:
-			if val, ok := env.GetLocal(p.Name); ok {
-				return object.Equal(val, arg)
+	switch p := pattern.(type) {
+	case *object.Identifier:
+		if val, ok := env.GetLocal(p.Name); ok {
+			if object.IsError(val) {
+				return false
 			}
-			env.Set(p.Name, arg)
-			return true
-
-		case *object.RawMessage:
-			for _, word := range p.Words {
-				if rt.matchPattern(word, arg, env) {
-					return true
-				}
-			}
+			return object.Equal(val, arg)
 		}
+		env.Set(p.Name, arg)
+		return true
 
-		if !object.Equal(pattern, arg) {
+	case *object.RawMessage:
+		if len(p.Words) != len(argElems) {
 			return false
 		}
+
+		count := 0
+		for i := range len(p.Words) {
+			word := p.Words[i]
+			if object.IsError(word) {
+				return false
+			}
+
+			arg := argElems[i]
+			if object.IsError(arg) {
+				return false
+			}
+
+			if rt.matchPattern(word, arg, env) {
+				count++
+			}
+		}
+
+		if count != len(argElems) {
+			return false
+		}
+		return true
+	}
+
+	if !object.Equal(pattern, arg) {
+		return false
 	}
 
 	return true

@@ -144,7 +144,11 @@ func (lx *Lexer) lexComment() (Token, Position, error) {
 	} else {
 		for {
 			r, err := lx.scanRune()
-			if err != nil || r == Newln {
+			if err != nil && !errors.Is(err, io.EOF) {
+				return tokUNKNOWN, pos, err
+			}
+
+			if r == Newln {
 				break
 			}
 		}

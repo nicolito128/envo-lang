@@ -65,8 +65,8 @@ user{"name", "john"}
 
 | Type | Example Syntax |
 | :--- | :--- |
-| **Integers** | { 123, 0b1010, 0o755, 0xFF, 123e+3 } |
-| **Floating-Point** | { 3.1415926, 1.2e-7, 0xFFp-4 } |
+| **Integers** | { 123, 0b1010, 0o755, 0xFF } |
+| **Floating-Point** | { 3.1415926, 1.2e-7, 0xFFp-4, 123e+4 } |
 | **Strings** | { "hello, world\n", \`raw string without escape interpretation\` } |
 | **Characters** | { 'a', '\n', 'Z' } |
 | **Booleans** | { true, false }` |

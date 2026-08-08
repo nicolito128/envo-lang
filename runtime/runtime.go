@@ -256,6 +256,10 @@ func (rt *Runtime) evalBinaryOp(op string, left, right object.Object, env *Envir
 		if cmp, ok := compareValues(left, right); ok {
 			return &object.Bool{Value: cmp >= 0}
 		}
+	case "&&":
+		return &object.Bool{Value: object.IsTruthy(left) && object.IsTruthy(right)}
+	case "||":
+		return &object.Bool{Value: object.IsTruthy(left) || object.IsTruthy(right)}
 	}
 
 	switch vLeft := left.(type) {

@@ -4,6 +4,7 @@ import "n128.xyz/n128/envo/lexer"
 
 const (
 	LOWEST      int = iota
+	COMP            // &&, ||
 	EQUALS          // ==, !=
 	LESSGREATER     // <, >, <=, >=
 	SUM             // +, -
@@ -13,6 +14,8 @@ const (
 )
 
 var precedences = map[lexer.TokenKind]int{
+	lexer.AND:    COMP,
+	lexer.OR:     COMP,
 	lexer.EQL:    EQUALS,
 	lexer.NEQ:    EQUALS,
 	lexer.LSS:    LESSGREATER,

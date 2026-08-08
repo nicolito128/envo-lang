@@ -1,15 +1,26 @@
+# Printing without new line
 print{~print, "\n"}
+
+# Printing with new line
 println{~println}
 
+# Length of the message
 list{}{1, 2, 3}
 println{ len{list{}} }
 
+# Type names
 println{ type{{}}, " ", type{"str"}, " ", type{123}, " ", type{3.1415}, " ", type{~ok} }
 
-println{ head{letters{'a', 'b', 'c'}}, tail{digits{0, 1, 2, 3}} }
+# Head: first word of the message
+println{ head{letters{'a', 'b', 'c'}} }
 
+# Tail: the message after the first word
+println{ tail{digits{0, 1, 2, 3}} }
+
+# Scan one character from the Stdio
 print{"Enter one digit: "}
 println{ scan{"%d"} }
 
+# Scan many characters from the Stdio until you find a new line
 print{"Enter a whole number: "}
 println{ scanln{"%d"} }

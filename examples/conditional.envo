@@ -1,0 +1,13 @@
+# Condition evaluation (if ... else)
+cond {true, ifTrue, _} {ifTrue}
+cond {false, _, orElse} {orElse}
+
+# Sign function example
+sgn {0} {0}
+sgn {x} { cond{ x > 0, 1, -1} }
+
+println{"Sign function results"}
+println{ "sgn{0} = ", sgn{0}}
+println{ "sgn{-5} = ", sgn{-5}}
+println{ "sgn{2} = ", sgn{2}}
+println{ "sgn{-(-10)} = ", sgn{-(-10)}}

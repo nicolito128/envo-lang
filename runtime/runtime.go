@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"unique"
 
-	"n128.xyz/n128/envo/ast"
-	"n128.xyz/n128/envo/object"
+	"github.com/nicolito128/envo-lang/ast"
+	"github.com/nicolito128/envo-lang/object"
 )
 
 var NIL = &object.Nil{}

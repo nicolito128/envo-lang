@@ -13,7 +13,7 @@ Envo is an esoteric and minimalistic message-oriented programming language where
 First clone the repository and run the interactive REPL:
 
 ```bash
-git clone https://n128.xyz/n128/envo-lang.git
+git clone https://github.com/nicolito128/envo-lang.git
 cd envo-lang
 go run ./cmd/envo/main.go
 ```

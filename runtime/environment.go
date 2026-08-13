@@ -1,7 +1,7 @@
 package runtime
 
 import (
-	"n128.xyz/n128/envo/object"
+	"github.com/nicolito128/envo-lang/object"
 )
 
 type Environment struct {

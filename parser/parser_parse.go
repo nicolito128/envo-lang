@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"n128.xyz/n128/envo/ast"
-	"n128.xyz/n128/envo/lexer"
+	"github.com/nicolito128/envo-lang/ast"
+	"github.com/nicolito128/envo-lang/lexer"
 )
 
 func (p *Parser) Parse() (ast.Node, []ParseError) {

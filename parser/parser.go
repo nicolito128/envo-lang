@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	"n128.xyz/n128/envo/lexer"
+	"github.com/nicolito128/envo-lang/lexer"
 )
 
 type Token struct {

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unique"
 
-	"n128.xyz/n128/envo/ast"
+	"github.com/nicolito128/envo-lang/ast"
 )
 
 type ObjectType string

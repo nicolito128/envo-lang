@@ -3,7 +3,7 @@ package runtime
 import (
 	"strings"
 
-	"n128.xyz/n128/envo/object"
+	"github.com/nicolito128/envo-lang/object"
 )
 
 func attachBuiltins(env *Environment) {

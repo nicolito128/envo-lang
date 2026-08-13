@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"n128.xyz/n128/envo/object"
+	"github.com/nicolito128/envo-lang/object"
 )
 
 // builtin functions

@@ -5,11 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"n128.xyz/n128/envo/lexer"
-	"n128.xyz/n128/envo/object"
-	"n128.xyz/n128/envo/parser"
-	"n128.xyz/n128/envo/repl"
-	"n128.xyz/n128/envo/runtime"
+	"github.com/nicolito128/envo-lang/lexer"
+	"github.com/nicolito128/envo-lang/object"
+	"github.com/nicolito128/envo-lang/parser"
+	"github.com/nicolito128/envo-lang/repl"
+	"github.com/nicolito128/envo-lang/runtime"
 )
 
 func main() {

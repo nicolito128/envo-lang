@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"n128.xyz/n128/envo/lexer"
+	"github.com/nicolito128/envo-lang/lexer"
 )
 
 type Program struct {

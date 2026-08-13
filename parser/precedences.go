@@ -1,6 +1,6 @@
 package parser
 
-import "n128.xyz/n128/envo/lexer"
+import "github.com/nicolito128/envo-lang/lexer"
 
 const (
 	LOWEST      int = iota

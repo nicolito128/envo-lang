@@ -1,4 +1,4 @@
-module n128.xyz/n128/envo
+module github.com/nicolito128/envo-lang
 
 go 1.26.4
 
